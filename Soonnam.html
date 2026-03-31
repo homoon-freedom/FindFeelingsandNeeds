@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>감정과 욕구 찾기(순남)</title>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <style>
+        body { margin: 0; background: #F2F2F7; font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', sans-serif; }
+        .header { padding: 20px 20px 10px; text-align: center; font-weight: 600; font-size: 24px; }
+		.header-desc { font-size: 12px; text-align: center; color: #666; margin-bottom: 12px; line-height: 1.4; padding: 0 20px; }
+        .container { padding: 10px; }
+        .card { background: white; border-radius: 14px; padding: 15px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .card-title { font-size: 16px; font-weight: 700; color: #000; margin-bottom: 5px; }
+        .card-desc { font-size: 13px; color: #666; margin-bottom: 12px; line-height: 1.4; }
+        
+        /* 제목 입력창 영역 */
+        .title-input-box { display: flex; justify-content: center; padding: 0 15px 15px; }
+        #mainTitle { width: 90%; max-width: 300px; padding: 15px; font-size: 20px; border: 2px solid #E5E5EA; border-radius: 16px; text-align: center; font-weight: 600; outline: none; background: white;}
+
+        /* 입력창 스타일 */
+        textarea {
+            width: 100%; box-sizing: border-box; min-height: 50px; border: none; outline: none; resize: none;
+            font-size: 18px; background: #F2F2F7; padding: 12px; border-radius: 10px; font-weight: bold;
+            line-height: 1.5; overflow: hidden; white-space: pre-wrap; word-break: break-all; display: block;
+        }
+
+        /* 공유하기용 가상 요소 스타일 (중요) */
+        .temp-div {
+            width: 100%; box-sizing: border-box; min-height: 50px; font-size: 15px; 
+            background: #F2F2F7; padding: 12px; border-radius: 10px; font-weight: bold;
+            line-height: 1.5; white-space: pre-wrap; word-break: break-all; color: black;
+        }
+
+        .buttons { display: flex; gap: 10px; padding: 15px 15px 40px; }
+        button { flex: 1; padding: 16px; border-radius: 12px; border: none; font-size: 16px; font-weight: 600; cursor: pointer; }
+        .clear { background: #E5E5EA; color: black; }
+        .image { background: #007AFF; color: white; }
+
+        #previewBox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; flex-direction: column; z-index: 1000; padding: 20px; }
+        #previewImg { max-width: 100%; max-height: 80%; border-radius: 12px; }
+        #closeBtn { margin-top: 20px; padding: 12px 30px; background: white; border-radius: 25px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<div id="capture">
+    <div class="header">감정과 욕구 찾기</div>
+    <div class="header-desc">이 작업은 내면의 자동적인 반응을 멈추고, 의식적인 선택을 하기 위함입니다.<br>
+    우리는 흔히 '상황'때문에 화가 난다고 생각하지만, <br>사실 화가 나는 이유는 '충족되지 않은 욕구'때문입니다.<br>
+    자신의 욕구를 명확히 아는 사람은 자신을 비난하지 않게되고 <br>자신과 타인과의 깊은 연결감을 느낌니다.<br>자신의 그림자(억눌린 감정이나 욕구)를 알아차리고 통합할 때 <br>우리는 비로소 온전한 치유와 성장을 경험하게 됩니다.</div>
+
+    <div class="title-input-box" id="titleArea">
+        <input type="text" id="mainTitle" placeholder="제목을 입력하세요">
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-title">1. 사건 인식</div>
+            <div class="card-desc">어떤 일이 있었는지 적어보세요.<br>
+    (투사나 자기비난을 멈추고 관찰된 사실만을 나열, 상황/사람에 대한 판단 금지)</div>
+            <textarea id="step1"></textarea>
+        </div>
+        <div class="card">
+            <div class="card-title">2. 감정 찾기</div>
+            <div class="card-desc">감정 3가지를 적어보세요.<br>(감정카드의 설명과 예제를 보고 내 상황과 맞는지 고려)</div>
+            <textarea id="step2"></textarea>
+        </div>
+        <div class="card">
+            <div class="card-title">3. 감정밑에 있는 생각 확인하기</div>
+            <div class="card-desc">무엇이 이 감정을 만들었지?<br>(이해를 하면 일단 감정에서 빠져나옴)</div>
+            <textarea id="step3"></textarea>
+        </div>
+        <div class="card">
+            <div class="card-title">4. 욕구 (긍정적인 의도 찾기)</div>
+            <div class="card-desc">욕구카드를 3가지 찾기<br>(용기를 가지고 대면하기,충족되거나 충족되지 않은 욕구는 감정들을 만들어 냄)</div>
+            <textarea id="step4"></textarea>
+        </div>
+        <div class="card">
+            <div class="card-title">5. 욕구밑에 있는 생각 찾기</div>
+            <div class="card-desc">나는 이것을 원한다. 왜냐하면~<br>("왜냐하면"을 많이 찾을수록 욕구가 강화됨)</div>
+            <textarea id="step5"></textarea>
+        </div>
+        <div class="card">
+            <div class="card-title">6. 구체적인 해결 방법 3가지</div>
+            <div class="card-desc">긍정적이고 구체적인 내용으로 정리<br>("~을 하지않겠다" 부정적인 내용은 감정을 억누르게 만듦)</div>
+            <textarea id="step6"></textarea>
+        </div>
+    </div>
+</div>
+<div class="buttons">
+    <button class="clear" onclick="clearMemo()">지우기</button>
+    <button class="image" onclick="makeImage()">공유하기</button>
+</div>
+
+<div id="previewBox">
+    <p style="color:white; margin-bottom:10px;">이미지를 길게 눌러 저장하세요</p>
+    <img id="previewImg">
+    <div id="closeBtn" onclick="closePreview()">닫기</div>
+</div>
+
+<script>
+// 높이 조절
+function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+}
+
+// 데이터 복구 및 이벤트 바인딩
+window.onload = function() {
+    const title = document.getElementById("mainTitle");
+    title.value = localStorage.getItem("mainTitle") || "";
+    title.addEventListener("input", () => localStorage.setItem("mainTitle", title.value));
+
+    for(let i=1; i<=6; i++){
+        const el = document.getElementById("step"+i);
+        el.value = localStorage.getItem("step"+i) || "";
+        autoResize(el);
+        el.addEventListener("input", function() {
+            localStorage.setItem("step"+i, this.value);
+            autoResize(this);
+        });
+    }
+}
+
+// 초기화
+function clearMemo() {
+    if(confirm("모든 내용을 삭제할까요?")) {
+        localStorage.clear();
+        location.reload();
+    }
+}
+
+async function makeImage() {
+    // 캡처할 최상위 요소
+    const captureArea = document.getElementById("capture");
+    
+    // html2canvas 옵션을 단순화하여 전체 영역을 캡처합니다.
+    const canvas = await html2canvas(captureArea, {
+        scale: 2, // 고화질
+        backgroundColor: "#F2F2F7", // 배경색 지정
+        useCORS: true, // 외외부 이미지 허용 (필요시)
+        logging: false, // 디버그 로그 끔
+        
+        onclone: (clonedDoc) => {
+            // 복제된 문서에서 입력창들을 텍스트로 교체하여 이미지에 잘 나오게 함
+
+            // 1. 제목 Input을 Div로 교체
+            const titleInput = clonedDoc.getElementById('mainTitle');
+            if(titleInput) {
+                const titleDiv = clonedDoc.createElement('div');
+                titleDiv.innerText = titleInput.value || titleInput.placeholder;
+                titleDiv.style.cssText = `
+                    width: 90%; max-width: 300px; padding: 15px; 
+                    font-size: 20px; font-weight: 600; text-align: center; 
+                    background: white; border-radius: 16px; 
+                    margin: 0 auto; display: block;
+                    border: 2px solid #E5E5EA;
+                `;
+                if(!titleInput.value) titleDiv.style.color = '#999';
+                titleInput.parentNode.replaceChild(titleDiv, titleInput);
+            }
+
+            // 2. 본문 Textarea들을 Div로 교체
+            const textareas = clonedDoc.querySelectorAll('textarea');
+            textareas.forEach(ta => {
+                const div = clonedDoc.createElement('div');
+                div.innerText = ta.value;
+                div.className = 'temp-div'; // 정의해둔 공유용 스타일 적용
+                ta.parentNode.replaceChild(div, ta);
+            });
+        }
+    });
+
+    try {
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+        const file = new File([blob], "mind_diary.png", { type: "image/png" });
+
+        // 모바일 공유 기능 시도
+        if (navigator.share && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+                files: [file],
+                title: "감정과 욕구 찾기"
+            });
+        } else {
+            // 지원하지 않는 경우(PC 등) 미리보기 띄움
+            showFallback(canvas);
+        }
+    } catch (err) {
+        console.error("공유 실패:", err);
+        showFallback(canvas);
+    }
+}
+
+function showFallback(canvas) {
+    document.getElementById("previewImg").src = canvas.toDataURL("image/png");
+    document.getElementById("previewBox").style.display = "flex";
+}
+
+function closePreview() {
+    document.getElementById("previewBox").style.display = "none";
+}
+</script>
+
+</body>
+</html>
